@@ -3,11 +3,13 @@
         "admin": {
             "name": "admin",
             "email": "admin@gym.com",
+            "phone": "1234567890",
             "password": "admin"
         },
         "staff": {
             "name": "staff",
             "email": "staff@gym.com",
+            "phone": "1234567890",
             "password": "staff"
         }
     },
@@ -16,13 +18,15 @@
             "name": [],
             "age": [],
             "membership": [],
-            "payment": []
+            "payment": [],
+            "due-balance": {"jan": 0, "feb": 0, "mar": 0, "apr": 0, "may": 0, "jun": 0, "jul": 0, "aug": 0, "sep": 0, "oct": 0, "nov": 0, "dec": 0}
         },
         "staff": {
             "name": [],
             "age": [],
             "membership": [],
-            "payment": []
+            "payment": [],
+            "due-balance": {"jan": 0, "feb": 0, "mar": 0, "apr": 0, "may": 0, "jun": 0, "jul": 0, "aug": 0, "sep": 0, "oct": 0, "nov": 0, "dec": 0}
         }
     }
 }
