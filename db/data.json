@@ -1,0 +1,28 @@
+{
+    "users": {
+        "admin": {
+            "name": "admin",
+            "email": "admin@gym.com",
+            "password": "admin"
+        },
+        "staff": {
+            "name": "staff",
+            "email": "staff@gym.com",
+            "password": "staff"
+        }
+    },
+    "members": {
+        "admin": {
+            "name": [],
+            "age": [],
+            "membership": [],
+            "payment": []
+        },
+        "staff": {
+            "name": [],
+            "age": [],
+            "membership": [],
+            "payment": []
+        }
+    }
+}
