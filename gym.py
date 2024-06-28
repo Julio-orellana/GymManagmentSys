@@ -6,8 +6,13 @@ import json
 import time
 
 # Funciones auxiliares:
+# Funcion para obtener la fecha actual
 def get_date():
     return time.strftime("%d-%m-%Y")
+
+# Funcion para pausar la ejecucion del programa por un tiempo determinado
+def sleep(seconds):
+    return time.sleep(seconds)
 
 # Decoradores:
 # Decorador para extender los metodos de la clase Database
