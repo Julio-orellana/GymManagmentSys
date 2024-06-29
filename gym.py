@@ -16,6 +16,10 @@ def get_date():
 def uuid_generator():
     return str(uuid.uuid4())
 
+# Funcion para limpiar la pantalla
+def clear_console():
+    return os.system("cls" if os.name == "nt" else "clear")
+
 # Funcion para pausar la ejecucion del programa por un tiempo determinado
 def sleep(seconds):
     return time.sleep(seconds)
@@ -92,6 +96,17 @@ class Payment:
         self.credit_card = credit_card
         self.rate = 0.18
 
+    def pay(self):
+        payment_type = self.get_payment_type()
+        sleep(3)
+        if self.validate_payment(payment_type):
+            clear_console()
+            print("Pago realizado exitosamente.")
+            return True
+        clear_console()
+        print("Error al realizar el pago.")
+        return False
+    
     def validate_payment(self, payment_type):
         match payment_type:
             case "efectivo":
@@ -116,9 +131,31 @@ class Payment:
                     return True
                 print("Transaccion Denegada.")
                 return False
-
+            
         return False
     
+    def get_payment_type(self):
+        print("Seleccione el metodo de pago: ")
+        print("1. Efectivo")
+        print("2. Balance de la cuenta")
+        print("3. Tarjeta")
+        choice = input("Seleccione una opcion: ").lower()
+        while choice != "q":
+            match choice:
+                case "1":
+                    return "efectivo"
+                case "2":
+                    return "credito"
+                case "3":
+                    return "tarjeta"
+                case "q":
+                    print("Saliendo...")
+                    sleep(2)
+                    return None
+                case _:
+                    print("Opcion invalida, intente de nuevo.")
+        return None
+
     def validate_credit_card(self, credit_card):
         digits = [int(digit) for digit in str(credit_card)]
         for i in range(len(digits) -2, -1, -2):
