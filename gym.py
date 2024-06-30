@@ -93,6 +93,7 @@ class Payment:
         self.balance = balance
         self.due_balance = due_balance
         self.date = get_date()
+        self.payment_id
         self.credit_card = credit_card
         self.rate = 0.18
 
@@ -101,7 +102,8 @@ class Payment:
         sleep(3)
         if self.validate_payment(payment_type):
             clear_console()
-            print("Pago realizado exitosamente.")
+            self.payment_id = uuid_generator()
+            print(f"Pago realizado exitosamente.\nNumero de autorizacion: {self.payment_id}")
             return True
         clear_console()
         print("Error al realizar el pago.")
