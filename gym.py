@@ -4,11 +4,21 @@
 import os
 import json
 import time
+import uuid
+import pandas as pd
 
 # Funciones auxiliares:
 # Funcion para obtener la fecha actual
 def get_date():
     return time.strftime("%d-%m-%Y")
+
+# Funcion para generar un id unico 
+def uuid_generator():
+    return str(uuid.uuid4())
+
+# Funcion para limpiar la pantalla
+def clear_console():
+    return os.system("cls" if os.name == "nt" else "clear")
 
 # Funcion para pausar la ejecucion del programa por un tiempo determinado
 def sleep(seconds):
@@ -79,10 +89,125 @@ class Membership:
 
 
 class Payment:
-    def __init__(self, id_payment, amount, date):
-        self.id_payment = id_payment
-        self.amount = amount
-        self.date = date
+    def __init__(self, balance, due_balance, credit_card=None):
+        self.balance = balance
+        self.due_balance = due_balance
+        self.date = get_date()
+        self.payment_id
+        self.credit_card = credit_card
+        self.rate = 0.18
+
+    def pay(self):
+        payment_type = self.get_payment_type()
+        sleep(3)
+        if self.validate_payment(payment_type):
+            clear_console()
+            self.payment_id = uuid_generator()
+            print(f"Pago realizado exitosamente.\nNumero de autorizacion: {self.payment_id}")
+            return True
+        clear_console()
+        print("Error al realizar el pago.")
+        return False
+    
+    def validate_payment(self, payment_type):
+        match payment_type:
+            case "efectivo":
+                cash = int(input("Ingrese el monto en efectivo: "))
+                if cash >= self.due_balance:
+                    print("Transaccion Autorizada.")
+                    return True              
+                print("Transaccion Denegada.")
+                return False
+
+            case "credito":
+                if self.balance >= self.due_balance:
+                    print("Transaccion Autorizada.")
+                    self.balance -= self.due_balance
+                    return True
+                print("Transaccion Denegada.")
+                return False
+            
+            case "tarjeta":
+                if self.validate_credit_card(self.credit_card):
+                    print("Transaccion Autorizada.")
+                    return True
+                print("Transaccion Denegada.")
+                return False
+            
+        return False
+    
+    def get_payment_type(self):
+        print("Seleccione el metodo de pago: ")
+        print("1. Efectivo")
+        print("2. Balance de la cuenta")
+        print("3. Tarjeta")
+        choice = input("Seleccione una opcion: ").lower()
+        while choice != "q":
+            match choice:
+                case "1":
+                    return "efectivo"
+                case "2":
+                    return "credito"
+                case "3":
+                    return "tarjeta"
+                case "q":
+                    print("Saliendo...")
+                    sleep(2)
+                    return None
+                case _:
+                    print("Opcion invalida, intente de nuevo.")
+        return None
+
+    def validate_credit_card(self, credit_card):
+        digits = [int(digit) for digit in str(credit_card)]
+        for i in range(len(digits) -2, -1, -2):
+            digits[i] *= 2
+            if digits[i] > 9:
+                digits[i] -= 9
+        return sum(digits) % 10 == 0
+    
+    def due_payment(self):
+        return self.due_balance
+    
+    def interest(self, days):
+        months = days / 30
+        for month in range(int(months)):
+            self.due_balance += self.due_balance * self.rate
+        return self.due_balance
+    
+    def _due_payments_info(self):
+        print("Generando reporte de pagos pendientes...")
+        sleep(5)
+
+        data = Database.load("data.json")
+        names = []
+        due_balances = []
+
+        for role in data["members"].values():
+            names.extend(role['name'])
+            due_balances.extend(role['due_balance'])
+
+        due_table = {"Miembro": names, "Saldo Pendiente": due_balances}
+        df = pd.DataFrame(due_table)
+        choice = str()
+        
+        while choice != "q":
+            print("Para visualizar el reporte presione V, para exportarlo a un archivo excel presione E, o presione Q para salir.")
+            choice = input("Seleccione una opcion:[v/e]: \n").lower()
+            match choice:
+                case "v":
+                    print(df)
+                case "e":
+                    df.to_excel("pagos_pendientes.xlsx", index=False)
+                    sleep(2)
+                    print("Reporte exportado exitosamente.")
+                case "q":
+                    print("Saliendo...")
+                    sleep(2)
+                case _:
+                    print("Opcion invalida, intente de nuevo.")
+        return
+            
 
 # Se extiende la clase Database con el decorador 
 @database_decorator
